@@ -1,6 +1,8 @@
 //handles fonts n stuff
-import { useEffect } from "react";
-import { useFonts } from "expo-font";
+import React, { useEffect, useState } from "react";
+import * as Font from "expo-font";
+// import { useFonts } from "expo-font";
+import { View, ActivityIndicator } from "react-native";
 import { SplashScreen, Stack } from "expo-router";
 
 import GlobalProvider from "../context/GlobalProvider";
@@ -8,7 +10,8 @@ import GlobalProvider from "../context/GlobalProvider";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [fontsLoaded, error] = useFonts({
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+  /* const [fontsLoaded, error] = useFonts({
     "BungeeShade-Regular": require("../assets/fonts/BungeeShade-Regular.ttf"),
     "Roboto-Italic-VariableFont_wdth,wght": require("../assets/fonts/Roboto-Italic-VariableFont_wdth,wght.ttf"),
     "Roboto-VariableFont_wdth,wght": require("../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
@@ -65,24 +68,50 @@ export default function RootLayout() {
     "Roboto-SemiBold": require("../assets/fonts/Roboto-SemiBold.ttf"),
     "Roboto-SemiBoldItalic": require("../assets/fonts/Roboto-SemiBoldItalic.ttf"),
     "Roboto-Thin": require("../assets/fonts/Roboto-Thin.ttf"),
-    "Roboto-ThinItalic": require("../assets/fonts/Roboto-ThinItalic.ttf"),
-  });
+    "Roboto-ThinItalic": require("../assets/fonts/Roboto-ThinItalic.ttf"), 
+  }); */
 
   useEffect(() => {
-    if (error) throw error;
+    async function loadFonts() {
+      try {
+        await Font.loadAsync({
+          "BungeeShade-Regular": require("../assets/fonts/BungeeShade-Regular.ttf"),
+          "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+        });
+        setFontsLoaded(true);
+        SplashScreen.hideAsync();
+      } catch (error) {
+        console.error("Error loading fonts", error);
+      }
+    }
+    loadFonts();
+  }, []);
+  // if (error) throw error;
 
+  /*
     if (fontsLoaded) {
       SplashScreen.hideAsync();
+    } else if (error) {
+      console.error("Error loading fonts:", error);
+      // Optionally, hide splash screen even if fonts fail to load
+      SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, error]);
+  }, [fontsLoaded, error]); 
+  */
 
   if (!fontsLoaded) {
-    return null;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
+    );
   }
 
+  /*
   if (!fontsLoaded && !error) {
     return null;
   }
+  */
 
   return (
     <GlobalProvider>
@@ -91,4 +120,4 @@ export default function RootLayout() {
       </Stack>
     </GlobalProvider>
   );
-};
+}
