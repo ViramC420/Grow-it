@@ -12,6 +12,8 @@ const {
   authenticationToken,
   authorizeRoles,
 } = require("./middleware/authMiddleware");
+const plantRoutes = require("./routes/plantRoutes");
+const sensorConfigRoutes = require("./routes/sensorConfigRoutes");
 
 const app = express();
 
@@ -33,6 +35,8 @@ mongoose
 // ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/sensor", sensorRoutes);
+app.use("/api/plants", plantRoutes);
+app.use("/api/sensors/config", sensorConfigRoutes);
 
 // ADMIN-ONLY ROUTE (Protected)
 app.get(
