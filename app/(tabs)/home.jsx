@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "@/constants";
-import { CustomButton } from "@/components";
+import { images } from "../../constants";
+import { CustomButton } from "../../components";
 import { FlatList, Image, RefreshControl, Text, View, StyleSheet } from "react-native";
 
 const Home = () => {

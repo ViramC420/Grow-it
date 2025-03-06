@@ -4,7 +4,7 @@ import { Image, Text, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { icons } from "../../constants";
 import { images } from "../../constants";
-import { useGlobalContext } from "@/context/GlobalProvider";
+import { useGlobalContext } from "../../context/GlobalProvider";
 import { CustomButton, Loader } from "@/components";
 import React from "react";
 

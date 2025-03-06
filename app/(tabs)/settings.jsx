@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "@/constants";
+import { images } from "../../constants";
 import { FlatList, Image, RefreshControl, Text, View, StyleSheet } from "react-native";
 
 export default function Tab() {

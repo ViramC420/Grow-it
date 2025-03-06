@@ -4,8 +4,8 @@ import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { CustomButton, Loader } from "@/components";
-import { images } from "@/constants/index";
-import { useGlobalContext } from "@/context/GlobalProvider";
+import { images } from "../constants/index";
+import { useGlobalContext } from "../context/GlobalProvider";
 
 const Greeting = () => {
   const { loading, isLogged } = useGlobalContext();
