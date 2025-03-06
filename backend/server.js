@@ -2,20 +2,24 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const helmet = require("helmet"); // SECURE HTTPS HEADERS
+const morgan = require("morgan"); // FOR LOGGING
 
 // IMPORT ROUTE & MIDDLEWARE
 const authRoutes = require("./routes/authRoutes");
-const { authenticateToken, authorizeRoles } = requre(
-  "../middleware/authMiddlware"
-);
+const sensorRoutes = require("./routes/sensorRoutes");
+const {
+  authenticationToken,
+  authorizeRoles,
+} = require("./middleware/authMiddleware");
 
 const app = express();
 
 // MIDDLEWARE
 app.use(express.json());
 app.use(cors());
-
-app.use("/api/auth", authRoutes);
+app.use(helmet());
+app.use(morgan("combined"));
 
 // CONNECTION TO MONGODB
 mongoose
@@ -28,6 +32,7 @@ mongoose
 
 // ROUTES
 app.use("/api/auth", authRoutes);
+app.use("/api/sensor", sensorRoutes);
 
 // ADMIN-ONLY ROUTE (Protected)
 app.get(
@@ -49,8 +54,15 @@ app.get(
   }
 );
 
+// ROOT ROUTE
 app.get("/", (req, res) => {
   res.send("🌱 Grow It! Backend is Running...");
+});
+
+// GLOBAL ERROR HANDLING
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 // START SERVER
