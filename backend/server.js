@@ -6,7 +6,7 @@ const helmet = require("helmet"); // SECURE HTTPS HEADERS
 const morgan = require("morgan"); // FOR LOGGING
 
 // IMPORT ROUTE & MIDDLEWARE
-const authRoutes = require("./routes/authRoutes");
+// const authRoutes = require("./routes/authRoutes");
 const sensorRoutes = require("./routes/sensorRoutes");
 const {
   authenticationToken,
@@ -41,7 +41,7 @@ app.use("/api/sensors/config", sensorConfigRoutes);
 // ADMIN-ONLY ROUTE (Protected)
 app.get(
   "/api/admin/dashboard",
-  authenticateToken,
+  authenticationToken,
   authorizeRoles("admin"),
   (req, res) => {
     res.json({ message: "🔐 Welcome Admin! You have full access." });
@@ -51,7 +51,7 @@ app.get(
 // USER & ADMIN ROUTE (Protected)
 app.get(
   "/api/user/profile",
-  authenticateToken,
+  authenticationToken,
   authorizeRoles("user", "admin"),
   (req, res) => {
     res.json({ message: "👤 User Profile Data" });
