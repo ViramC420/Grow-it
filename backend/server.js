@@ -32,6 +32,8 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ DB Connection Error:", err));
 
+console.log("Mongo URI:", process.env.MONGO_URI);
+
 // ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/sensor", sensorRoutes);
