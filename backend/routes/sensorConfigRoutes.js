@@ -2,7 +2,7 @@ const express = require("express");
 const Sensor = require("../models/Sensor");
 const router = express.Router();
 
-// GET SENSOR CONFIG BY USER ID
+// GET SENSOR CONFIGURATION BY USER ID
 router.get("/user/:userid", async (req, res) => {
   try {
     const { userid } = req.params;

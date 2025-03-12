@@ -1,11 +1,11 @@
 const express = require("express");
 const SensorData = require("../models/SensorData");
-const { authenticateToken } = require("../middleware/authMiddleware");
+const { authenticationToken } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // SAVE SENSOR DATA (POST)
-router.post("/data", authenticateToken, async (req, res) => {
+router.post("/data", authenticationToken, async (req, res) => {
   try {
     const { sensorId, temperature, humidity, soilMoisture, light } = req.body;
 
@@ -24,8 +24,8 @@ router.post("/data", authenticateToken, async (req, res) => {
   }
 });
 
-// Route to Fetch Latest Sensor Data (GET)
-router.get("/latest/:sensorId", authenticateToken, async (req, res) => {
+// GET LATEST SENSOR DATA (GET)
+router.get("/latest/:sensorId", authenticationToken, async (req, res) => {
   try {
     const { sensorId } = req.params;
     const latestData = await SensorData.findOne({ sensorId }).sort({

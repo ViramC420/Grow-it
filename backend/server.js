@@ -5,8 +5,8 @@ const cors = require("cors");
 const helmet = require("helmet"); // SECURE HTTPS HEADERS
 const morgan = require("morgan"); // FOR LOGGING
 
-// IMPORT ROUTE & MIDDLEWARE
-// const authRoutes = require("./routes/authRoutes");
+// IMPORT ROUTES & MIDDLEWARE
+const authRoutes = require("./routes/auth");
 const sensorRoutes = require("./routes/sensorRoutes");
 const {
   authenticationToken,
