@@ -38,7 +38,7 @@ const SensorSchema = new mongoose.Schema(
     humidityactive: Boolean,
     temperatureactive: Boolean,
   },
-  { collection: "sensors" }
+  { collection: "Sensors" }
 );
 
 module.exports = mongoose.model("Sensor", SensorSchema);

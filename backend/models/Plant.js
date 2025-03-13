@@ -10,7 +10,7 @@ const PlantSchema = new mongoose.Schema(
     humidityrange: [String],
     temperaturerange: [String],
   },
-  { collection: "plants" }
+  { collection: "Plants" }
 );
 
 module.exports = mongoose.model("Plant", PlantSchema);

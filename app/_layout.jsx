@@ -19,6 +19,7 @@ export default function RootLayout() {
         await Font.loadAsync({
           "BungeeShade-Regular": require("../assets/fonts/BungeeShade-Regular.ttf"),
           "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+          /*
           "Roboto-Black": require("../assets/fonts/Roboto-Black.ttf"),
           "Roboto-BlackItalic": require("../assets/fonts/Roboto-BlackItalic.ttf"),
           "Roboto-Italic": require("../assets/fonts/Roboto-Italic.ttf"),
@@ -27,8 +28,7 @@ export default function RootLayout() {
           "Roboto-SemiBold": require("../assets/fonts/Roboto-SemiBold.ttf"),
           "Roboto-SemiBoldItalic": require("../assets/fonts/Roboto-SemiBoldItalic.ttf"),
           "Roboto-Thin": require("../assets/fonts/Roboto-Thin.ttf"),
-          "Roboto-ThinItalic": require("../assets/fonts/Roboto-ThinItalic.ttf"), 
-
+          "Roboto-ThinItalic": require("../assets/fonts/Roboto-ThinItalic.ttf"), */
         });
         setFontsLoaded(true);
         SplashScreen.hideAsync();

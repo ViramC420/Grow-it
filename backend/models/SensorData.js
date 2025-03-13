@@ -9,7 +9,7 @@ const SensorDataSchema = new mongoose.Schema(
     light: { type: Number, required: true },
     timestamp: { type: Date, default: Date.now },
   },
-  { collection: "sensordata" }
+  { collection: "Sensordata" }
 );
 
 module.exports = mongoose.model("SensorData", SensorDataSchema);
