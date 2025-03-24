@@ -43,7 +43,7 @@ soil_sensor = machine.ADC(27)  # Soil Moisture Sensor (GP27 = ADC1)
 # issa use "pico5"
 device_id = "placeHolderPico#"  # change for each pico.(1,2,3...)                         
                             
-# Update this to your DigitalOcean server IP
+# DigitalOcean server IP
 SERVER_URL = "http://128.199.0.224:5000/update_data"
 
 # Function to send data
