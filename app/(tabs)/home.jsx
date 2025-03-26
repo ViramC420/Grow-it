@@ -1,8 +1,10 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native-web";
 import { images } from "../../constants";
 import { CustomButton } from "../../components";
+import axios from 'axios';
 import {
   FlatList,
   Image,
@@ -76,21 +78,65 @@ const Home = () => {
   */
 };
 
+function App() {
+  const [sensorData, setSensorData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get('http://localhost:5001/api/data');
+        // Only keep documents that came from Pico devices
+        const picoData = res.data.filter(item => item.device_id);
+        setSensorData(picoData);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // refresh every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.content}>
+          <Text style={styles.title}>🌱 Grow It! </Text>
+          <Text style={styles.subtitle}>Sensor Dashboard</Text>
+          {sensorData.length === 0 ? (
+            <Text>No sensor data available.</Text>
+          ) : (
+            sensorData.map((entry, i) => (
+              <View key={i} style={styles.sensorCard}>
+                <Text><Text style={styles.bold}>Device ID:</Text> {entry.device_id}</Text>
+                <Text><Text style={styles.bold}>Temperature:</Text> {entry.temp_c}°C / {entry.temp_f}°F</Text>
+                <Text><Text style={styles.bold}>Humidity:</Text> {entry.humidity}%</Text>
+                <Text><Text style={styles.bold}>Light:</Text> {entry.light_condition} ({entry.light_voltage?.toFixed(2)}V)</Text>
+                <Text><Text style={styles.bold}>Soil:</Text> {entry.soil_condition} ({entry.soil_voltage?.toFixed(2)}V)</Text>
+              </View>
+            ))
+          )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: "center",
-    //alignItems: "center",
+    backgroundColor: "#f8f6f1",
     padding: 20,
-    backgroundColor: "#fff",
   },
-  textContainer: {
-    marginTop: 100,
-    fontFamily: "Roboto-Medium",
-    fontSize: 55,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#3d4325",
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  content: {
+    width: '100%',
+    alignItems: 'center',
   },
   header: {
     fontSize: 24,
@@ -98,16 +144,31 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
-  plantItem: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 8,
+  title: {
+    fontSize: 40,
+    fontFamily: 'BungeeShade-Regular',
+    color: '#3D4325',
+    textAlign: 'center',
+    paddingBottom: 10,
   },
-  plantName: {
-    fontSize: 18,
-    fontWeight: "600",
+  subtitle: {
+    fontSize: 20,
+    fontFamily: 'Roboto-Regular',
+    textAlign: 'center',
+    paddingBottom: 20,
+  },
+  sensorCard: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#cad6a3',
+    borderWidth: 2,
+    padding: 15,
+    marginVertical: 20,
+    borderRadius: 10,
+    width: '90%',
+  },
+  bold: {
+    fontWeight: 'bold',
   },
 });
 
-export default Home;
+export default App;
