@@ -64,18 +64,6 @@ const Home = () => {
       />
     </SafeAreaView>
   );
-
-  /*
-  return (
-    <View>
-      <View>
-        <View>
-          <Text style={styles.textContainer}>Welcome!</Text>
-        </View>
-      </View>
-    </View>
-  ); 
-  */
 };
 
 function App() {
@@ -125,8 +113,8 @@ function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#f8f6f1",
+    flex: 20,
+    backgroundColor: "#fefdfc",
     padding: 20,
   },
   scrollContainer: {
@@ -162,9 +150,10 @@ const styles = StyleSheet.create({
     borderColor: '#cad6a3',
     borderWidth: 2,
     padding: 15,
-    marginVertical: 20,
+    marginVertical: 15,
     borderRadius: 10,
-    width: '90%',
+    width: '65%',
+    fontFamily: 'Roboto-Regular',
   },
   bold: {
     fontWeight: 'bold',
