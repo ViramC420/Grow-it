@@ -11,25 +11,27 @@ import {
 import { CustomButton } from "@/components";
 import { useRouter } from "expo-router";
 
-const Login = () => {
+const SignUp = () => {
   const router = useRouter();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://growitweb.com/api/auth/login", {
+      const response = await fetch("https://growitweb.com/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
       const data = await response.json();
       if (response.ok) {
-        router.push("/(tabs)/home"); // NAV TO HOME WHEN SUCCESS
+        Alert.alert("Success", "Account created successfully!");
+        router.push("/login"); // NAV TO LOGIN AFTER SIGN UP
       } else {
-        Alert.alert("Login Failed", data.message || "Invalid credentials");
+        Alert.alert("Sign Up Failed", data.message || "Error creating account");
       }
     } catch (error) {
       console.error(error);
@@ -41,7 +43,14 @@ const Login = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Sign Up</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -58,12 +67,12 @@ const Login = () => {
         secureTextEntry
       />
       <CustomButton
-        title={loading ? "Logging in..." : "Login"}
-        handlePress={handleLogin}
+        title={loading ? "Signing up..." : "Sign Up"}
+        handlePress={handleSignUp}
         containerStyles={styles.button}
       />
-      <Text style={styles.linkText} onPress={() => router.push("/signup")}>
-        Don't have an account? Sign Up
+      <Text style={styles.linkText} onPress={() => router.push("/login")}>
+        Already have an account? Login
       </Text>
       {loading && <ActivityIndicator size="large" color="#000" />}
     </SafeAreaView>
@@ -96,15 +105,15 @@ const styles = StyleSheet.create({
   },
   button: {
     width: "50%",
-    backgroundColor: "#3a2b26",
+    backgroundColor: "#755649",
     marginTop: 10,
   },
   linkText: {
     marginTop: 20,
-    color: "##3a2b26",
+    color: "#755649",
     fontSize: 16,
     textDecorationLine: "underline",
   },
 });
 
-export default Login;
+export default SignUp;
