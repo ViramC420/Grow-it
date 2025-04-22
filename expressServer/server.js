@@ -7,34 +7,25 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
-
 const PORT = process.env.PORT || 5001;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// Sensor model (reading from 'sensors' collection in GrowItDatabase)
-// can be updated if we need to read from another collection like plants or users
-const sensorSchema = new mongoose.Schema({
-  device_id: String,
-  temp_c: Number,
-  temp_f: Number,
-  humidity: Number,
-  light_adc: Number,
-  light_voltage: Number,
-  light_condition: String,
-  soil_adc: Number,
-  soil_voltage: Number,
-  soil_condition: String,
-  timestamp: Date
-}, { collection: 'sensors' }); //Tells Mongoose to use the 'sensors' collection
+// Models
+const Sensor = require('./models/Sensor');
 
-const Sensor = mongoose.model('SensorData', sensorSchema);
+// Routes
+app.use('/api/plants', require('./routes/plants'));
+app.use('/api/sensors', require('./routes/sensors'));
 
-// GET route for frontend
+// API endpoint to get sensor data
 app.get('/api/data', async (req, res) => {
   try {
     const data = await Sensor.find().sort({ timestamp: -1 }).limit(10);
@@ -44,7 +35,7 @@ app.get('/api/data', async (req, res) => {
   }
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
   console.log(`Express server running at http://localhost:${PORT}`);
 });
