@@ -11,7 +11,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  /* const [fontsLoaded, error] = useFonts({*/
 
   useEffect(() => {
     async function loadFonts() {
@@ -19,10 +18,10 @@ export default function RootLayout() {
         await Font.loadAsync({
           "BungeeShade-Regular": require("../assets/fonts/BungeeShade-Regular.ttf"),
           "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
+          "Roboto-Italic": require("../assets/fonts/Roboto-Italic.ttf"),
           /*
           "Roboto-Black": require("../assets/fonts/Roboto-Black.ttf"),
           "Roboto-BlackItalic": require("../assets/fonts/Roboto-BlackItalic.ttf"),
-          "Roboto-Italic": require("../assets/fonts/Roboto-Italic.ttf"),
           "Roboto-Light": require("../assets/fonts/Roboto-Light.ttf"),
           "Roboto-LightItalic": require("../assets/fonts/Roboto-LightItalic.ttf"),
           "Roboto-SemiBold": require("../assets/fonts/Roboto-SemiBold.ttf"),
@@ -51,6 +50,7 @@ export default function RootLayout() {
     <GlobalProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>

@@ -12,6 +12,7 @@ import plant10 from "../assets/images/plant10.png";
 import sun1 from "../assets/images/sun1.png";
 import sun2 from "../assets/images/sun2.png";
 import sun3 from "../assets/images/sun3.png";
+import landingbackground from "../assets/images/landingbackground.jpg"
 
 export default {
     plant1,
@@ -26,5 +27,6 @@ export default {
     plant10,
     sun1,
     sun2,
-    sun3
+    sun3,
+    landingbackground
 };
