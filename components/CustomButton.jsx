@@ -32,8 +32,8 @@ const CustomButton = ({
 
 const styles = StyleSheet.create({
     buttonContainer: {
-        borderRadius: 15,
-        minHeight: 30,
+        borderRadius: 20,
+        minHeight: 33,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },  
     buttonText: {
-        fontFamily: 'Roboto-Medium',
+        fontFamily: 'Roboto-Regular',
         color: 'white',
+        fontSize: 15,
     },
     fixToText: {
         flexDirection: 'row',

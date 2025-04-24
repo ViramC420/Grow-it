@@ -1,16 +1,9 @@
-/*
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { SafeAreaView, View, Text, TextInput, StyleSheet, ActivityIndicator, Alert, } from "react-native";
 import { CustomButton } from "@/components";
 import { useRouter } from "expo-router";
+import { images } from "../../constants/index";
+import { ImageBackground, ScrollView } from "react-native-web";
 
 const SignUp = () => {
   const router = useRouter();
@@ -43,79 +36,141 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <CustomButton
-        title={loading ? "Signing up..." : "Sign Up"}
-        handlePress={handleSignUp}
-        containerStyles={styles.button}
-      />
-      <Text style={styles.linkText} onPress={() => router.push("/login")}>
-        Already have an account? Login
-      </Text>
-      {loading && <ActivityIndicator size="large" color="#000" />}
+    <ImageBackground
+          source = {images.landingbackground}
+          style={[styles.background, { backgroundColor: '#000' }]}
+          resizeMode="cover"
+          blurRadius={7}
+    >
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Sign Up</Text>
+      
+          <TextInput
+            style={styles.username_input}
+            placeholder="Username"
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+          />
+
+          <TextInput
+            style={styles.email_input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+      
+          <TextInput
+            style={styles.password_input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+      
+          <CustomButton
+            title={loading ? "Signing up..." : "Sign Up"}
+            handlePress={handleSignUp}
+            containerStyles={styles.button}
+          />
+      
+          <Text style={styles.linkText} onPress={() => router.push("/login")}>
+            Already have an account? Login
+          </Text>
+          {loading && <ActivityIndicator size="large" color="#000" />}
+        </View>
+      </ScrollView>
     </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: "#f8f6f1",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    width: '100%',
+    height: '100%',
+  },
+  safeArea: {
+    flex: 1,
+    padding: 0,
+    margin: 0,
+  },
+  container: {
+    flexGrow: 1,
+    backgroundColor: 'rgba(254, 253, 252, 0.8)',
+    marginTop: 30,
+    marginLeft: 150,
+    marginRight: 150,
+    borderRadius: 50,
+    alignItems: 'center',
   },
   title: {
-    fontFamily: "BungeeShade-Regular",
-    fontSize: 36,
-    color: "#3d4325",
-    marginBottom: 20,
+    marginTop: 40,
+    fontFamily: 'BungeeShade-Regular', 
+    fontSize: 80, 
+    fontWeight: 'bold', 
+    textAlign: 'center',
+    color: '#072404',
   },
-  input: {
-    width: "100%",
-    height: 50,
-    borderColor: "#ccc",
+  username_input: {
+    borderRadius: 20,
     borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    minHeight: 33,
+    marginTop: 115,
+    paddingHorizontal: 12,
+    width: "36%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderColor: "#cad6a3",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
   },
-  button: {
-    width: "100%",
-    backgroundColor: "#1a1a1a",
-    marginTop: 10,
+  email_input: {
+    borderRadius: 20,
+    borderWidth: 1,
+    minHeight: 33,
+    marginTop: 11,
+    paddingHorizontal: 12,
+    width: "36%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderColor: "#cad6a3",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
   },
+  password_input: {
+    borderRadius: 20,
+    borderWidth: 1,
+    minHeight: 33,
+    marginTop: 11,
+    paddingHorizontal: 12,
+    width: "36%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderColor: "#cad6a3",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
+  },
+  button: { marginTop: 11, width: "36%", backgroundColor: "#3a2b26", },
   linkText: {
-    marginTop: 20,
-    color: "#755649",
+    marginTop: 15,
+    marginBottom: 30,
+    color: "##3a2b26",
     fontSize: 16,
+    fontFamily: 'Roboto-Italic',
     textDecorationLine: "underline",
   },
-});
+})
 
 export default SignUp;
-*/

@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { SafeAreaView, View, Text, TextInput, StyleSheet, ActivityIndicator, Alert, } from "react-native";
 import { CustomButton } from "@/components";
 import { useRouter } from "expo-router";
+import { images } from "../../constants/index";
+import { ImageBackground, ScrollView } from "react-native-web";
 
 const Login = () => {
   const router = useRouter();
@@ -40,71 +34,117 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <CustomButton
-        title={loading ? "Logging in..." : "Login"}
-        handlePress={handleLogin}
-        containerStyles={styles.button}
-      />
-      <Text style={styles.linkText} onPress={() => router.push("/signup")}>
-        Don't have an account? Sign Up
-      </Text>
-      {loading && <ActivityIndicator size="large" color="#000" />}
-    </SafeAreaView>
+    <ImageBackground
+      source = {images.landingbackground}
+      style={[styles.background, { backgroundColor: '#000' }]}
+      resizeMode="cover"
+      blurRadius={7}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+            style={styles.email_input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+      
+          <TextInput
+            style={styles.password_input}
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+      
+          <CustomButton
+            title={loading ? "Logging in..." : "Login"}
+            handlePress={handleLogin}
+            containerStyles={styles.button}
+          />
+      
+          <Text style={styles.linkText} onPress={() => router.push("/signUp")}>
+            Don't have an account? Sign Up
+          </Text>
+          {loading && <ActivityIndicator size="large" color="#000" />}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: "#f8f6f1",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    width: '100%',
+    height: '100%',
+  },
+  safeArea: {
+    flex: 1,
+    padding: 0,
+    margin: 0,
+  },
+  container: {
+    flexGrow: 1,
+    backgroundColor: 'rgba(254, 253, 252, 0.8)',
+    marginTop: 30,
+    marginLeft: 150,
+    marginRight: 150,
+    borderRadius: 50,
+    alignItems: 'center',
   },
   title: {
-    fontFamily: "BungeeShade-Regular",
-    fontSize: 40,
-    color: "#3d4325",
-    marginBottom: 20,
+    marginTop: 40,
+    fontFamily: 'BungeeShade-Regular', 
+    fontSize: 79, 
+    fontWeight: 'bold', 
+    textAlign: 'center',
+    color: '#072404',
   },
-  input: {
-    width: "50%",
-    height: 50,
+  email_input: {
+    borderRadius: 20,
+    borderWidth: 1,
+    minHeight: 33,
+    marginTop: 125,
+    paddingHorizontal: 12,
+    width: "36%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
     borderColor: "#cad6a3",
-    borderWidth: 2,
-    borderRadius: 10,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
   },
-  button: {
-    width: "50%",
-    backgroundColor: "#3a2b26",
-    marginTop: 10,
+  password_input: {
+    borderRadius: 20,
+    borderWidth: 1,
+    minHeight: 33,
+    marginTop: 11,
+    paddingHorizontal: 12,
+    width: "36%",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderColor: "#cad6a3",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
   },
+  button: { marginTop: 11, width: "36%", backgroundColor: "#3a2b26"},
   linkText: {
-    marginTop: 20,
+    marginTop: 15,
+    marginBottom: 30,
     color: "##3a2b26",
     fontSize: 16,
+    fontFamily: 'Roboto-Italic',
     textDecorationLine: "underline",
   },
-});
+})
 
 export default Login;
