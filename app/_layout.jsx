@@ -1,7 +1,7 @@
 //handles fonts n stuff
 import React, { useEffect, useState } from "react";
 import * as Font from "expo-font";
-// import { useFonts } from "expo-font";
+import { useFonts } from "expo-font";
 import { View, ActivityIndicator } from "react-native";
 import { SplashScreen, Stack } from "expo-router";
 
@@ -19,6 +19,10 @@ export default function RootLayout() {
           "BungeeShade-Regular": require("../assets/fonts/BungeeShade-Regular.ttf"),
           "Roboto-Regular": require("../assets/fonts/Roboto-Regular.ttf"),
           "Roboto-Italic": require("../assets/fonts/Roboto-Italic.ttf"),
+          "Roboto-Light": require("../assets/fonts/Roboto-Light.ttf"),
+          "Roboto-LightItalic": require("../assets/fonts/Roboto-LightItalic.ttf"),
+          "WorkSans-SemiBold": require("../assets/fonts/WorkSans-SemiBold.ttf"),
+          "WorkSans-SemiBoldItalic": require("../assets/fonts/WorkSans-SemiBoldItalic.ttf"),
           /*
           "Roboto-Black": require("../assets/fonts/Roboto-Black.ttf"),
           "Roboto-BlackItalic": require("../assets/fonts/Roboto-BlackItalic.ttf"),
