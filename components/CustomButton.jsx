@@ -1,7 +1,7 @@
 //Base for buttons, style is similar throughout the app
 //customizable parts are the title of the button and background color
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Pressable, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 const CustomButton = ({ 
     title, 
@@ -11,44 +11,59 @@ const CustomButton = ({
     textStyles,
     isLoading,
 }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
     return (
-        <TouchableOpacity
+        <Pressable
             onPress={handlePress}
-            activeOpacity= {0.5}
+            onHoverIn={() => setIsHovered(true)}
+            onHoverOut={() => setIsHovered(false)}
             style = {[
                 styles.buttonContainer,
                 containerStyles,
                 backgroundColor,
                 isLoading && styles.loadingButton,
+                isHovered && styles.hoverButton,
             ]}
             disabled={isLoading}
         >
             <Text style={[styles.buttonText, textStyles]}>
                 {title}
             </Text>
-        </TouchableOpacity>
+        </Pressable>
     );
 };
 
 const styles = StyleSheet.create({
     buttonContainer: {
         borderRadius: 20,
-        minHeight: 33,
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row",
+        minHeight: 45,
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+        width: '100%',
+        transition: 'all 0.2s ease-in-out',
     },
     loadingButton: {
         opacity: 0.5,
-    },  
+    }, 
+    hoverButton: {
+        opacity: 0.9,
+        transform: [{ scale: 1.05 }],
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
+    }, 
     buttonText: {
-        fontFamily: 'Roboto-Regular',
+        fontFamily: 'Roboto-Light',
         color: 'white',
-        fontSize: 15,
+        textAlign: 'center',
+        fontSize: 20,
     },
     fixToText: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
     },
 });
 

@@ -23,9 +23,9 @@ const Greeting = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Loader isLoading = {loading} />  
             <View style={styles.container}>
-              <Text style = {styles.textContainer}>Grow It!</Text>
+              <Text style = {styles.title}>Grow It!</Text>
 
-              <Text style = {styles.subtextContainer}>In case your green thumb needs some work.</Text>
+              <Text style = {styles.subtextContainer}>Helping your green thumb grow, one plant at a time.</Text>
 
               <CustomButton
                 title="Log In"
@@ -53,36 +53,47 @@ const styles = StyleSheet.create({
   },
   safeArea: {
     flex: 1,
-    padding: 0,
-    margin: 0,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingVertical: '4%',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   container: {
-    flexGrow: 1,
-    backgroundColor: 'rgba(254, 253, 252, 0.8)',
-    marginTop: 30,
-    marginLeft: 150,
-    marginRight: 150,
-    borderRadius: 50,
+    flex: 1,
+    width: '75%',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',
+    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 50,
   },
-  textContainer: {
-    marginTop: 40,
-    fontFamily: 'BungeeShade-Regular', 
-    fontSize: 79, 
+  title: {
+    paddingVertical: '1%',
+    fontFamily: "BungeeShade-Regular", 
+    fontSize: 140, 
     fontWeight: 'bold', 
     textAlign: 'center',
-    color: '#072404',
+    justifyContent: 'flex-start',
+    color: '#093001',
   },
   subtextContainer: {
-    fontFamily: 'Roboto-Bold', 
-    fontWeight: 'bold',
-    fontSize: 15, 
+    fontFamily: 'Roboto-LightItalic',
+    fontSize: 20, 
     textAlign: 'center', 
-    marginTop: 125,
-    color: '#072404',
+    marginTop: '2%',
+    color: '#093001',
   },
-  top_button: { marginTop: 20, width: "36%", backgroundColor: "#755649"},
-  bottom_button: { marginTop: 15, marginBottom: 40, width: "36%", backgroundColor: "#3a2b26"},
+  top_button: { 
+    marginVertical: 5, 
+    marginTop: '1%',
+    width: "45%", 
+    backgroundColor: "#45332b"},
+  bottom_button: { 
+    marginTop: '1%', 
+    marginBottom: '2%',
+    width: "45%",
+    backgroundColor: "#1f1714"},
 })
 
 export default Greeting;

@@ -1,70 +1,14 @@
 import React from "react";
+import axios from 'axios';
+import { Redirect, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ScrollView } from "react-native-web";
 import { images } from "../../constants";
-import { CustomButton } from "../../components";
-import axios from 'axios';
-import {
-  FlatList,
-  Image,
-  RefreshControl,
-  Text,
-  View,
-  StyleSheet,
-  ActivityIndicator,
-} from "react-native";
-
-const Home = () => {
-  const [plants, setPlants] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const handleButtonPress = () => {
-    console.log("Button pressed!");
-  };
-
-  useEffect(() => {
-    fetch("https://growitweb.com/api/plants")
-      .then((response) => response.json())
-      .then((data) => {
-        setPlants(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching plant data:", error);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#000" />
-        <Text>Loading plant data...</Text>
-      </View>
-    );
-  }
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Plant Data</Text>
-      <FlatList
-        data={plants}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <View style={styles.plantItem}>
-            <Text style={styles.plantName}>{item.plantname}</Text>
-            <Text>Genus: {item.plantgenus}</Text>
-            <Text>PH Range: {item.phrange.join(" - ")}</Text>
-            <Text>Light Range: {item.lightrange.join(" - ")}</Text>
-            <Text>Moisture Range: {item.moisturerange.join(" - ")}</Text>
-            <Text>Humidity Range: {item.humidityrange.join(" - ")}</Text>
-            <Text>Temperature Range: {item.temperaturerange.join(" - ")}</Text>
-          </View>
-        )}
-      />
-    </SafeAreaView>
-  );
-};
+import { CustomButton, Loader } from "../../components";
+import { ImageBackground } from "react-native-web";
+import { FlatList, Image, RefreshControl, Text, View, StyleSheet, ScrollView, ActivityIndicator, } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
+//import { useGlobalContext } from "../context/GlobalProvider";
 
 function App() {
   const [sensorData, setSensorData] = useState([]);
@@ -87,76 +31,173 @@ function App() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.content}>
-          <Text style={styles.title}>🌱 Grow It! </Text>
-          <Text style={styles.subtitle}>Sensor Dashboard</Text>
-          {sensorData.length === 0 ? (
-            <Text>No sensor data available.</Text>
-          ) : (
-            sensorData.map((entry, i) => (
-              <View key={i} style={styles.sensorCard}>
-                <Text><Text style={styles.bold}>Device ID:</Text> {entry.device_id}</Text>
-                <Text><Text style={styles.bold}>Temperature:</Text> {entry.temp_c}°C / {entry.temp_f}°F</Text>
-                <Text><Text style={styles.bold}>Humidity:</Text> {entry.humidity}%</Text>
-                <Text><Text style={styles.bold}>Light:</Text> {entry.light_condition} ({entry.light_voltage?.toFixed(2)}V)</Text>
-                <Text><Text style={styles.bold}>Soil:</Text> {entry.soil_condition} ({entry.soil_voltage?.toFixed(2)}V)</Text>
-              </View>
-            ))
-          )}
+    <ImageBackground
+          source = {images.home}
+          style={[styles.background, { backgroundColor: '#000' }]}
+          resizeMode="cover"
+          blurRadius={7}
+    >
+
+      <SafeAreaView style = {styles.safeArea}>
+        <View style={styles.header}>
+          <Text style={styles.title}> Grow It! - Dashboard</Text>
+          <Text style={styles.search} onPress={() => router.push("/search")}>
+            <FontAwesome name="search" size={35} color="#000" />
+          </Text>
+          <Text style={styles.setup} onPress={() => router.push("/setup")}>
+            <FontAwesome name="plus" size={35} color="#000" />
+          </Text>
+          <Text style={styles.settings} onPress={() => router.push("/settings")}>
+            <FontAwesome name="cog" size={35} color="#000" />
+          </Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+        
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+              {sensorData.length === 0 ? (
+                <Text>No sensor data available.</Text>
+              ) : ( 
+                sensorData.map((entry, i) => (
+                  <View key={i} style={styles.sensorData}>
+                    <View>
+                      <View style = {styles.tempcontainer}>
+                        <Text style={styles.temp}>Temperature: {entry.temp_f}°F</Text>
+                      </View>
+                      <View style = {styles.humiditycontainer}>
+                        <Text style={styles.humidity}>Humidity: {entry.humidity}%</Text>
+                      </View>
+                    </View>
+
+                    <View style = {styles.lightcontainer}>
+                      <Text style={styles.light}> {entry.light_condition} </Text>
+                    </View>
+                  
+                    <View style = {styles.soilcontainer}>  
+                      <Text style={styles.soil}>Soil: {entry.soil_condition}</Text>
+                    </View>
+                  </View>
+                ))
+              )}
+            </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 }
 
+//<Text><Text style={styles.bold}>Device ID:</Text> {entry.device_id}</Text>
+//({entry.light_voltage?.toFixed(2)}V)
+//({entry.soil_voltage?.toFixed(2)}V)
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 20,
-    backgroundColor: "#fefdfc",
-    padding: 20,
+  background: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: '100%',
+    height: '100%',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginTop: 10
+  },
+  title: {
+    flex: 1,
+    fontSize: 45,
+    fontFamily: 'BungeeShade-Regular',
+    fontWeight: 'bold',
+    color: '#000',
+    paddingTop: '1%',
+    paddingHorizontal: '1%',
+  },
+  search: {
+    paddingHorizontal: '1%',
+  },
+  setup: {
+    paddingHorizontal: '1%',
+  },
+  settings: {
+    paddingHorizontal: '1%',
   },
   scrollContainer: {
     flexGrow: 1,
+    paddingVertical: '1%',
+    alignItems: 'center',
     justifyContent: 'flex-start',
+  },
+  container: {
+    width: '95%',
+  },
+  sensorData: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: '%1',
+    marginTop: '2%',
+    marginBottom: '5%',
   },
-  content: {
-    width: '100%',
+  tempcontainer: {
+    borderRadius: 20,
+    height: 100,
+    width: '125%',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  title: {
-    fontSize: 40,
-    fontFamily: 'BungeeShade-Regular',
-    color: '#3D4325',
-    textAlign: 'center',
-    paddingBottom: 10,
-  },
-  subtitle: {
+  temp: {
     fontSize: 20,
     fontFamily: 'Roboto-Regular',
-    textAlign: 'center',
-    paddingBottom: 20,
+    color: '#000',
+    paddingHorizontal: '5%',
   },
-  sensorCard: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
+  humiditycontainer: { 
+    borderRadius: 20,
+    height: 100,
+    marginTop: '20%',
+    width: '125%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',},
+  humidity: {
+    fontSize: 20,
     fontFamily: 'Roboto-Regular',
+    color: '#000',
+    paddingHorizontal: '5%',
   },
-  bold: {
-    fontWeight: 'bold',
+  lightcontainer: { 
+    borderRadius: 20,
+    height: 230,
+    width: '30%',
+    marginLeft: '0%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',
+  },
+  light: {
+    fontSize: 20,
+    fontFamily: 'Roboto-Regular',
+    color: '#000',
+    paddingHorizontal: '5%',
+  },
+  soilcontainer: {
+    borderRadius: 20,
+    height: 230,
+    width: '30%',
+    marginLeft: '0%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',
+  },
+  soil: {
+    fontSize: 20,
+    fontFamily: 'Roboto-Regular',
+    color: '#000',
+    paddingHorizontal: '5%',
   },
 });
 

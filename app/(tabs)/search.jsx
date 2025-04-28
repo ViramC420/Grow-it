@@ -4,6 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../../constants";
 import { FlatList, Image, RefreshControl, Text, View, StyleSheet, TextInput, ActivityIndicator } from "react-native";
 import { ScrollView } from "react-native-web";
+import { ImageBackground } from "react-native-web";
+import { FontAwesome } from "@expo/vector-icons";
+import { Redirect, router } from "expo-router";
 
 const Search = () => {
   const [query, setQuery] = useState('');
@@ -50,136 +53,136 @@ const Search = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for plants..."
-          value={query}
-          onChangeText={setQuery}
-        />
-        {loading ? (
-        <ActivityIndicator size="large" color="#3d4325" />
-        ) : (
-          <FlatList
-           data={plants}
-           keyExtractor={(item) => item._id}
-            renderItem={renderItem}
-            ListEmptyComponent={<Text style={styles.emptyText}>No plants found.</Text>}
-          />
-       )}
-      </ScrollView>
-    </SafeAreaView>
+    <ImageBackground
+      source = {images.home}
+      style={[styles.background, { backgroundColor: '#000' }]}
+      resizeMode="cover"
+      blurRadius={7}
+    >
+      
+      <SafeAreaView style = {styles.safeArea}>
+        <View style={styles.header}>
+          <Text style={styles.title}> Grow It! - Search</Text>
+          <Text style={styles.home} onPress={() => router.push("/home")}>
+            <FontAwesome name="home" size={35} color="#000" />
+          </Text>
+          <Text style={styles.setup} onPress={() => router.push("/setup")}>
+            <FontAwesome name="plus" size={35} color="#000" />
+          </Text>
+          <Text style={styles.settings} onPress={() => router.push("/settings")}>
+            <FontAwesome name="cog" size={35} color="#000" />
+          </Text>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search for plants..."
+              value={query}
+              onChangeText={setQuery}
+            />
+        
+            {loading ? (
+              <ActivityIndicator size="large" color="#3d4325" />
+            ) : (
+              <View style={styles.outputContainer}>
+                <FlatList
+                data={plants}
+                keyExtractor={(item) => item._id}
+                renderItem={renderItem}
+                ListEmptyComponent={<Text style={styles.emptyText}>No plants found.</Text>}
+                />
+              </View>
+           )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: "#fefdfc",
-    padding: 20,
+    resizeMode: 'contain',
+    width: '100%',
+    height: '100%',
+  },
+  safeArea: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginTop: 10
+  },
+  title: {
+    flex: 1,
+    fontSize: 45,
+    fontFamily: 'BungeeShade-Regular',
+    fontWeight: 'bold',
+    color: '#000',
+    paddingTop: '1%',
+    paddingHorizontal: '1%',
+  },
+  home: {
+    paddingHorizontal: '1%',
+  },
+  setup: {
+    paddingHorizontal: '1%',
+  },
+  settings: {
+    paddingHorizontal: '1%',
   },
   scrollContainer: {
     flexGrow: 1,
+    paddingVertical: '1%',
+    alignItems: 'center',
     justifyContent: 'flex-start',
-    alignItems: 'center',
   },
-  content: {
-    width: '100%',
+  container: {
+    flex: 1,
+    width: '95%',
+    //backgroundColor: 'rgba(254, 253, 252, 0.85)',
+    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 50,
   },
   searchInput: {
-    width: "50%",
-    height: 50,
-    borderColor: "#cad6a3",
+    borderRadius: 20,
     borderWidth: 2,
-    borderRadius: 10,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    backgroundColor: "#fff",
+    minHeight: 45,
+    marginTop: '1%',
+    paddingHorizontal: 20,
+    width: "85%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: "#093001",
+    backgroundColor: "#fff",   
+    fontFamily: 'Roboto-Regular',
+    color: '#072404',
+  },
+  outputContainer: {
+    flex: 1,
+    width: '85%',
+    marginTop: '2%',
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50,
   },
   plantItem:  {
-    width: "100%",
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
+    minHeight: 45,
+    marginTop: '5%',  
     fontFamily: 'Roboto-Regular',
+    color: '#072404',
   },
-  /*
-  plantName: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
+  emptyText: {
+    marginTop: '5%',
   },
-  plantgenus: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  phrange: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  lightrange: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  moisturerange: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  humidityrange: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  temperaturerange: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#cad6a3',
-    borderWidth: 2,
-    padding: 15,
-    marginVertical: 15,
-    borderRadius: 10,
-    width: '65%',
-    fontFamily: 'Roboto-Regular',
-  },
-  */
 });
 
 export default Search;
