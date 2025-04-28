@@ -20,6 +20,8 @@ function App() {
         // Only keep documents that came from Pico devices
         const picoData = res.data.filter(item => item.device_id);
         setSensorData(picoData);
+
+        //if (sensorData.light == "Light") {}
       } catch (err) {
         console.error("Error fetching data:", err);
       }
@@ -59,18 +61,26 @@ function App() {
               ) : ( 
                 sensorData.map((entry, i) => (
                   <View key={i} style={styles.sensorData}>
-                    <View>
-                      <View style = {styles.tempcontainer}>
-                        <Text style={styles.temp}>Temperature: {entry.temp_f}°F</Text>
+                      <View style = {styles.col1}>
+                        <View style = {styles.tempcontainer}>
+                          <Text style={styles.temp}>Temperature: {entry.temp_f}°F</Text>
+                        </View>
+                        <View style = {styles.humiditycontainer}>
+                          <Text style={styles.humidity}>Humidity: {entry.humidity}%</Text>
+                        </View>
                       </View>
-                      <View style = {styles.humiditycontainer}>
-                        <Text style={styles.humidity}>Humidity: {entry.humidity}%</Text>
-                      </View>
-                    </View>
 
-                    <View style = {styles.lightcontainer}>
-                      <Text style={styles.light}> {entry.light_condition} </Text>
-                    </View>
+                      <View style = {styles.lightcontainer}>
+                        <Image 
+                          source={entry.light_condition === "Light" ? images.light : images.dark} 
+                          style={styles.light}
+                          resizeMode="center"
+                        ></Image>
+                      </View>
+                    
+                      <View style = {styles.soilcontainer}>
+                        
+                      </View>
                   
                     <View style = {styles.soilcontainer}>  
                       <Text style={styles.soil}>Soil: {entry.soil_condition}</Text>
@@ -84,6 +94,20 @@ function App() {
     </ImageBackground>
   );
 }
+
+/*
+<Image 
+                          source={
+                            entry.soil_condition === "Only Water" ? images.water :
+                            entry.soil_condition === "Wet Soil" ? images.wet :
+                            entry.soil_condition === "Moist Soil" ? images.moist :
+                            entry.soil_condition === "Dry Soil" ? images.dry :
+                            null
+                          }
+                          style={styles.soil}
+                          resizeMode="center"
+                        ></Image>
+*/
 
 //<Text><Text style={styles.bold}>Device ID:</Text> {entry.device_id}</Text>
 //({entry.light_voltage?.toFixed(2)}V)
@@ -136,15 +160,20 @@ const styles = StyleSheet.create({
   sensorData: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: '%1',
     marginTop: '2%',
     marginBottom: '5%',
+    width: '95%',
+  },
+  col1: {
+    flexDirection: 'column',
+    height: 210,
+    marginTop: '2%',
+    width: "30%",
   },
   tempcontainer: {
     borderRadius: 20,
     height: 100,
-    width: '125%',
+    width: '75%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(254, 253, 252, 0.85)',
@@ -158,8 +187,8 @@ const styles = StyleSheet.create({
   humiditycontainer: { 
     borderRadius: 20,
     height: 100,
-    marginTop: '20%',
-    width: '125%',
+    marginTop: '2%',
+    width: '75%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(254, 253, 252, 0.85)',},
@@ -171,29 +200,33 @@ const styles = StyleSheet.create({
   },
   lightcontainer: { 
     borderRadius: 20,
-    height: 230,
+    height: 210,
+    flexDirection: 'column',
+    marginTop: '2%',
     width: '30%',
-    marginLeft: '0%',
+    marginHorizontal: '5%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(254, 253, 252, 0.85)',
-  },
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',},
   light: {
-    fontSize: 20,
-    fontFamily: 'Roboto-Regular',
-    color: '#000',
-    paddingHorizontal: '5%',
+    width: '50%',
+    //fontSize: 20,
+    //fontFamily: 'Roboto-Regular',
+    //color: '#000',
+    //paddingHorizontal: '5%',
   },
   soilcontainer: {
     borderRadius: 20,
-    height: 230,
+    height: 210,
+    flexDirection: 'column',
+    marginTop: '2%',
     width: '30%',
-    marginLeft: '0%',
+    marginHorizontal: '5%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(254, 253, 252, 0.85)',
-  },
+    backgroundColor: 'rgba(254, 253, 252, 0.85)',},
   soil: {
+    width: '40%',
     fontSize: 20,
     fontFamily: 'Roboto-Regular',
     color: '#000',

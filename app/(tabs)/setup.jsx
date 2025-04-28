@@ -25,6 +25,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
+import { Redirect, router } from "expo-router";
 
 export default function Tab() {
   const [ssid, setSsid] = useState("");

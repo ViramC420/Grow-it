@@ -1,25 +1,3 @@
-/**import React from "react";
-import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "../../constants";
-import { FlatList, Image, RefreshControl, Text, View, StyleSheet } from "react-native";
-
-export default function Tab() {
-    return (
-      <View style={styles.container}>
-        <Text>Tab [Home|Setup|Search|Settings]</Text>
-      </View>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  });
-*/
 import React from "react";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +7,7 @@ import { ScrollView } from "react-native-web";
 import { ImageBackground } from "react-native-web";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
+import { Redirect, router } from "expo-router";
 
 export default function SettingsPage() {
   const [username, setUsername] = useState("PlantLover123");
