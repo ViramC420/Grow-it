@@ -41,7 +41,7 @@ export default function Tab() {
         blurRadius={7}
       >
         <ScrollView contentContainerStyle={styles.container}>
-          {/* Top Nav Icons */}
+         
           <View style={styles.topIcons}>
   {pathname !== "/home" && (
     <TouchableOpacity onPress={() => router.push("/home")} style={styles.icon}>
@@ -65,10 +65,9 @@ export default function Tab() {
   )}
 </View>
 
-          {/* Centered Page Title */}
           <Text style={styles.heading}>CONNECT YOUR RASPBERRY PI PICO</Text>
   
-          {/* Setup Instructions */}
+         
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>📋 How to Set Up</Text>
             <Text style={styles.instruction}>1. Hold down the BOOTSEL button and plug in your Pico.</Text>
@@ -79,7 +78,7 @@ export default function Tab() {
             <Text style={styles.instruction}>6. Reboot your Pico. You're done!</Text>
           </View>
   
-          {/* Common Issues FAQ */}
+      
           <View style={styles.card}>
             <Text style={styles.sectionTitle}>🛠 Common Setup Issues & Fixes</Text>
             <Text style={styles.instruction}>• I don’t see the "PICO-CONNECT" Wi-Fi:</Text>
