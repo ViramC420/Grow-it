@@ -20,21 +20,30 @@ export default function Tab() {
     },
   });
 */
-import React from "react";
-import { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Switch,
+  Alert,
+  ImageBackground,
+} from "react-native";
 import { images } from "../../constants";
-import { FlatList, Image, RefreshControl, Text, View, StyleSheet, TextInput, ActivityIndicator } from "react-native";
-import { ScrollView } from "react-native-web";
-import { ImageBackground } from "react-native-web";
 import { FontAwesome } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native";
+import { router, usePathname } from "expo-router";
 
 export default function SettingsPage() {
   const [username, setUsername] = useState("PlantLover123");
+  const [email, setEmail] = useState("plantlover@example.com");
   const [password, setPassword] = useState("********");
   const [confirmPassword, setConfirmPassword] = useState("********");
-  const [email, setEmail] = useState("plantlover@example.com");
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+  const pathname = usePathname();
 
   const handleUpdate = () => {
     if (password !== confirmPassword) {
@@ -46,81 +55,99 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = () => {
-    Alert.alert(
-      "Delete Account",
-      "Are you sure you want to delete your account?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Delete", onPress: () => Alert.alert("Account Deleted") },
-      ]
-    );
+    Alert.alert("Delete Account", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", onPress: () => Alert.alert("Account Deleted") },
+    ]);
   };
 
   return (
     <ImageBackground
-        source = {images.home}
-        style={[styles.background, { backgroundColor: '#000' }]}
-        resizeMode="cover"
-        blurRadius={7}
+      source={images.home}
+      style={styles.background}
+      resizeMode="cover"
+      blurRadius={7}
     >
-    
-      <SafeAreaView style = {styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}> Grow It! - Settings</Text>
-            <Text style={styles.home} onPress={() => router.push("/home")}>
+      <ScrollView contentContainerStyle={styles.container}>
+ 
+        <View style={styles.topIcons}>
+          {pathname !== "/home" && (
+            <TouchableOpacity onPress={() => router.push("/home")} style={styles.icon}>
               <FontAwesome name="home" size={35} color="#000" />
-             </Text>
-            <Text style={styles.search} onPress={() => router.push("/search")}>
+            </TouchableOpacity>
+          )}
+          {pathname !== "/search" && (
+            <TouchableOpacity onPress={() => router.push("/search")} style={styles.icon}>
               <FontAwesome name="search" size={35} color="#000" />
-            </Text>
-            <Text style={styles.setup} onPress={() => router.push("/setup")}>
+            </TouchableOpacity>
+          )}
+          {pathname !== "/setup" && (
+            <TouchableOpacity onPress={() => router.push("/setup")} style={styles.icon}>
               <FontAwesome name="plus" size={35} color="#000" />
-            </Text>
+            </TouchableOpacity>
+          )}
         </View>
-            
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
-            <Text style={styles.label}>Username</Text>
-            <TextInput
-              style={styles.input}
-              value={username}
-              onChangeText={setUsername}
+
+      
+        <Text style={styles.heading}>GROW IT! - SETTINGS</Text>
+
+        <View style={styles.settingsBox}>
+      
+          <Text style={styles.label}>Username</Text>
+          <TextInput style={styles.input} value={username} onChangeText={setUsername} />
+
+        
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+          />
+
+      
+          <Text style={styles.label}>New Password</Text>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+ 
+          <Text style={styles.label}>Confirm New Password</Text>
+          <TextInput
+            style={styles.input}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+          />
+
+
+          <View style={styles.toggleRow}>
+            <Text style={styles.label}>Enable Notifications</Text>
+            <Switch
+              value={notificationsEnabled}
+              onValueChange={() => setNotificationsEnabled(!notificationsEnabled)}
             />
-
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-            />
-
-            <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-            />
-
-            <Text style={styles.label}>Confirm Password</Text>
-            <TextInput
-              style={styles.input}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              secureTextEntry
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-              <Text style={styles.buttonText}>Save Changes</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-              <Text style={styles.deleteText}>Delete Account</Text>
-            </TouchableOpacity>
           </View>
-        </ScrollView>
-      </SafeAreaView>
+
+          <View style={styles.dropdownRow}>
+            <Text style={styles.label}>Language</Text>
+            <Text style={styles.dropdownText}>English (coming soon)</Text>
+          </View>
+
+    
+          <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+            <Text style={styles.buttonText}>Save Changes</Text>
+          </TouchableOpacity>
+
+          
+          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+            <Text style={styles.deleteText}>Delete Account</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 }
@@ -128,66 +155,85 @@ export default function SettingsPage() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'contain',
-    width: '100%',
-    height: '100%',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    marginTop: 10
-  },
-  title: {
-    flex: 1,
-    fontSize: 45,
-    fontFamily: 'BungeeShade-Regular',
-    fontWeight: 'bold',
-    color: '#000',
-    paddingTop: '1%',
-    paddingHorizontal: '1%',
-  },
-  home: {
-    paddingHorizontal: '1%',
-  },
-  search: {
-    paddingHorizontal: '1%',
-  },
-  setup: {
-    paddingHorizontal: '1%',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingVertical: '1%',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    width: "100%",
+    height: "100%",
   },
   container: {
-    width: '95%',
+    alignItems: "center",
+    paddingTop: 100,
+    paddingBottom: 80,
+  },
+  topIcons: {
+    position: "absolute",
+    top: 30,
+    right: 20,
+    flexDirection: "row",
+    gap: 15,
+    zIndex: 10,
+  },
+  icon: {
+    marginLeft: 15,
+  },
+  heading: {
+    fontSize: 30,
+    fontFamily: "BungeeShade-Regular",
+    fontWeight: "bold",
+    color: "#000",
+    textAlign: "center",
+    marginBottom: 25,
+  },
+  settingsBox: {
+    backgroundColor: "#fff",
+    width: "90%",
+    maxWidth: 500,        
+    borderRadius: 20,
+    padding: 20,
+    marginTop: 10,
+    elevation: 4,
+    alignSelf: "center",      
+  },
+  
+  label: {
+    fontWeight: "bold",
+    fontSize: 14,
+    marginBottom: 4,
+    color: "#333",
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
     padding: 10,
+    marginBottom: 15,
+    backgroundColor: "#fafafa",
+  },
+  toggleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  dropdownRow: {
+    marginBottom: 25,
+  },
+  dropdownText: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
   },
   button: {
     backgroundColor: "#5DB075",
-    padding: 15,
-    marginTop: 30,
+    padding: 14,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 10,
   },
   buttonText: {
     color: "white",
     fontWeight: "bold",
   },
   deleteButton: {
-    padding: 15,
+    padding: 14,
     marginTop: 20,
     alignItems: "center",
   },
@@ -196,3 +242,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+

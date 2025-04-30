@@ -16,153 +16,155 @@ export default function Tab() {
       alignItems: 'center',
     },
   });*/
-  import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+  import React from "react";
+  import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    ImageBackground,
+    TouchableOpacity,
+    Dimensions,
+  } from "react-native";
+  import { images } from "../../constants"; // adjust if needed
+  import { FontAwesome } from "@expo/vector-icons";
+  import { router, usePathname } from "expo-router";
+  
+  export default function ConnectPico() {
+    const pathname = usePathname();
+  
+    return (
+      <ImageBackground
+        source={images.home}
+        style={[styles.background, { backgroundColor: "#000" }]}
+        resizeMode="cover"
+        blurRadius={7}
+      >
+        <ScrollView contentContainerStyle={styles.container}>
+          {/* Top Nav Icons */}
+          <View style={styles.topIcons}>
+  {pathname !== "/home" && (
+    <TouchableOpacity onPress={() => router.push("/home")} style={styles.icon}>
+      <FontAwesome name="home" size={35} color="#000" />
+    </TouchableOpacity>
+  )}
+  {pathname !== "/search" && (
+    <TouchableOpacity onPress={() => router.push("/search")} style={styles.icon}>
+      <FontAwesome name="search" size={35} color="#000" />
+    </TouchableOpacity>
+  )}
+  {pathname !== "/setup" && (
+    <TouchableOpacity onPress={() => router.push("/setup")} style={styles.icon}>
+      <FontAwesome name="plus" size={35} color="#000" />
+    </TouchableOpacity>
+  )}
+  {pathname !== "/settings" && (
+    <TouchableOpacity onPress={() => router.push("/settings")} style={styles.icon}>
+      <FontAwesome name="cog" size={35} color="#000" />
+    </TouchableOpacity>
+  )}
+</View>
 
-export default function Tab() {
-  const [ssid, setSsid] = useState("");
-  const [password, setPassword] = useState("");
-  const [chatMessage, setChatMessage] = useState("");
-  const [chatLog, setChatLog] = useState([]);
-
-  const handleConnect = () => {
-    // Placeholder action for connecting to Raspberry Pi Pico
-    alert(`Attempting to connect to "${ssid}"...`);
-  };
-
-  const handleSendChat = () => {
-    if (chatMessage.trim() === "") return;
-
-    setChatLog([...chatLog, { sender: "user", text: chatMessage }]);
-    setChatMessage("");
-
-    // Simulated AI response
-    setTimeout(() => {
-      setChatLog((prev) => [
-        ...prev,
-        { sender: "ai", text: "I'm here to help! Try making sure your Pico is in setup mode." },
-      ]);
-    }, 1000);
-  };
-
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Tab [Home|Setup|Search|Settings]</Text>
-
-      {/* WiFi Setup Section */}
-      <View style={styles.section}>
-        <Text style={styles.subheading}>Setup Your Raspberry Pi Pico</Text>
-
-        <TextInput
-          placeholder="Enter WiFi SSID"
-          style={styles.input}
-          value={ssid}
-          onChangeText={setSsid}
-        />
-        <TextInput
-          placeholder="Enter WiFi Password"
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-
-        <TouchableOpacity style={styles.button} onPress={handleConnect}>
-          <Text style={styles.buttonText}>Connect Device</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* AI Chatbot Section */}
-      <View style={styles.section}>
-        <Text style={styles.subheading}>Need Help? Ask Our AI Chatbot</Text>
-
-        <View style={styles.chatBox}>
-          {chatLog.map((msg, index) => (
-            <Text
-              key={index}
-              style={{
-                color: msg.sender === "user" ? "#333" : "#5DB075",
-                marginBottom: 5,
-              }}
-            >
-              {msg.sender === "user" ? "You: " : "GrowBot: "}
-              {msg.text}
-            </Text>
-          ))}
-        </View>
-
-        <TextInput
-          placeholder="Ask something..."
-          style={styles.input}
-          value={chatMessage}
-          onChangeText={setChatMessage}
-        />
-        <TouchableOpacity style={styles.chatButton} onPress={handleSendChat}>
-          <Text style={styles.chatButtonText}>Send</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    paddingBottom: 60,
-    backgroundColor: "#fff",
-  },
-  heading: {
-    fontSize: 18,
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  section: {
-    marginBottom: 30,
-  },
-  subheading: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "#5DB075",
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  chatBox: {
-    backgroundColor: "#f4f4f4",
-    padding: 10,
-    borderRadius: 10,
-    height: 150,
-    marginBottom: 10,
-  },
-  chatButton: {
-    backgroundColor: "#333",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  chatButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});
+          {/* Centered Page Title */}
+          <Text style={styles.heading}>CONNECT YOUR RASPBERRY PI PICO</Text>
+  
+          {/* Setup Instructions */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>📋 How to Set Up</Text>
+            <Text style={styles.instruction}>1. Hold down the BOOTSEL button and plug in your Pico.</Text>
+            <Text style={styles.instruction}>2. Drag and drop the <Text style={styles.bold}>pico-w-firmware.uf2</Text> file into the RPI-RP2 drive.</Text>
+            <Text style={styles.instruction}>3. Connect to the Pico Wi-Fi network named <Text style={styles.bold}>PICO-CONNECT</Text>.</Text>
+            <Text style={styles.instruction}>4. Open your browser and visit <Text style={styles.bold}>http://192.168.4.1</Text>.</Text>
+            <Text style={styles.instruction}>5. Enter your home Wi-Fi name and password.</Text>
+            <Text style={styles.instruction}>6. Reboot your Pico. You're done!</Text>
+          </View>
+  
+          {/* Common Issues FAQ */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>🛠 Common Setup Issues & Fixes</Text>
+            <Text style={styles.instruction}>• I don’t see the "PICO-CONNECT" Wi-Fi:</Text>
+            <Text style={styles.faqText}>→ Reboot the Pico and make sure you installed the UF2 file.</Text>
+  
+            <Text style={styles.instruction}>• The setup page (192.168.4.1) won’t load:</Text>
+            <Text style={styles.faqText}>→ Reconnect to the Pico Wi-Fi. Disable mobile data if needed.</Text>
+  
+            <Text style={styles.instruction}>• I entered my Wi-Fi and nothing happened:</Text>
+            <Text style={styles.faqText}>→ Double-check your SSID and password. Try again.</Text>
+  
+            <Text style={styles.instruction}>• How do I know it worked?</Text>
+            <Text style={styles.faqText}>→ If "PICO-CONNECT" disappears after reboot, it’s connected!</Text>
+          </View>
+        </ScrollView>
+      </ImageBackground>
+    );
+  }
+  
+  const CARD_WIDTH = Dimensions.get("window").width > 600 ? 500 : Dimensions.get("window").width * 0.92;
+  
+  const styles = StyleSheet.create({
+    background: {
+      flex: 1,
+      resizeMode: "cover",
+      width: "100%",
+      height: "100%",
+    },
+    container: {
+      alignItems: "center",
+      padding: 20,
+      paddingTop: 100,
+      paddingBottom: 60,
+    },
+    heading: {
+      fontSize: 26,
+      fontFamily: "BungeeShade-Regular",
+      fontWeight: "bold",
+      color: "#000",
+      textAlign: "center",
+      marginBottom: 25,
+    },
+    topIcons: {
+      position: "absolute",
+      top: 30,
+      right: 20,
+      flexDirection: "row",
+      gap: 15,
+      zIndex: 10,
+    },
+    icon: {
+      marginLeft: 15,
+    },
+    
+    card: {
+      backgroundColor: "#fff",
+      width: CARD_WIDTH,
+      borderRadius: 20,
+      padding: 20,
+      marginBottom: 25,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 5,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: "600",
+      marginBottom: 10,
+      color: "#333",
+    },
+    instruction: {
+      fontSize: 14,
+      color: "#444",
+      marginBottom: 8,
+    },
+    bold: {
+      fontWeight: "bold",
+    },
+    faqText: {
+      fontSize: 13,
+      color: "#666",
+      marginBottom: 10,
+      marginLeft: 10,
+    },
+  });
+  
