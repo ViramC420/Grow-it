@@ -72,57 +72,6 @@ app.post("/api/login", async (req, res) => {
 });
 /* -------------------------- */
 
-/*--------------USER MODEL AND AUTH ROUTES--------------*/
-const userSchema = new mongoose.Schema(
-  {
-    username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-  },
-  { collection: "users" }
-);
-
-const User = mongoose.model("User", userSchema);
-
-// SIGNUP
-app.post("/api/signup", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    if (!username || !password)
-      return res
-        .status(400)
-        .json({ message: "Username and password required." });
-
-    if (await User.findOne({ username }))
-      return res.status(400).json({ message: "Username already taken." });
-
-    const hash = await bcrypt.hash(password, 10);
-    await new User({ username, password: hash }).save();
-    res.status(201).json({ message: "User registered." });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error during signup." });
-  }
-});
-
-// LOGIN
-app.post("/api/login", async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    if (!user || !(await bcrypt.compare(password, user.password)))
-      return res.status(401).json({ message: "Invalid credentials." });
-
-    const payload = { id: user._id, username: user.username };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.json({ token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error during login." });
-  }
-});
-/*------------------------------------------------------*/
 
 // Sensor model (reading from 'sensors' collection in GrowItDatabase)
 // can be updated if we need to read from another collection like plants or users
