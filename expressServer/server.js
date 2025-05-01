@@ -1,21 +1,12 @@
 // run command in terminal to start server
 // "node server.js"
 
-<<<<<<< HEAD
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-=======
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
->>>>>>> 7e2c4735ddb87b4809164ad1fc2e0ee206abc9cb
 
 const app = express();
 app.use(cors());
