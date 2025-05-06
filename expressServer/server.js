@@ -1,3 +1,4 @@
+
 // run command in terminal to start server
 // "node server.js"
 
@@ -72,9 +73,7 @@ app.post("/api/login", async (req, res) => {
 });
 /* -------------------------- */
 
-
-// Sensor model (reading from 'sensors' collection in GrowItDatabase)
-// can be updated if we need to read from another collection like plants or users
+// Sensor model
 const sensorSchema = new mongoose.Schema(
   {
     device_id: String,
@@ -88,19 +87,97 @@ const sensorSchema = new mongoose.Schema(
     soil_voltage: Number,
     soil_condition: String,
     timestamp: Date,
+    assignedPlant: Object,
   },
   { collection: "sensors" }
-); //Tells Mongoose to use the 'sensors' collection
+);
 
 const Sensor = mongoose.model("SensorData", sensorSchema);
 
-// GET route for frontend
+// Plant model
+const plantSchema = new mongoose.Schema(
+  {
+    plantname: String,
+    image_url: String,
+    moisturerange: String,
+    lightrange: String,
+    tempf_range: String,
+  },
+  { collection: "plants" }
+);
+
+const Plant = mongoose.model("Plant", plantSchema);
+
+// Aggregation to get latest entry per device
 app.get("/api/data", async (req, res) => {
   try {
-    const data = await Sensor.find().sort({ timestamp: -1 }).limit(10);
+    const data = await Sensor.aggregate([
+      { $sort: { timestamp: -1 } },
+      {
+        $group: {
+          _id: "$device_id",
+          device_id: { $first: "$device_id" },
+          temp_c: { $first: "$temp_c" },
+          temp_f: { $first: "$temp_f" },
+          humidity: { $first: "$humidity" },
+          light_adc: { $first: "$light_adc" },
+          light_voltage: { $first: "$light_voltage" },
+          light_condition: { $first: "$light_condition" },
+          soil_adc: { $first: "$soil_adc" },
+          soil_voltage: { $first: "$soil_voltage" },
+          soil_condition: { $first: "$soil_condition" },
+          timestamp: { $first: "$timestamp" },
+          assignedPlant: { $first: "$assignedPlant" },
+        },
+      },
+      { $sort: { device_id: 1 } }
+    ]);
     res.json(data);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch data" });
+  }
+});
+
+// GET all plants
+app.get("/api/plants", async (req, res) => {
+  try {
+    const plants = await Plant.find();
+    res.json(plants);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch plant data" });
+  }
+});
+
+// PUT assign plant to a sensor
+app.put("/api/assign", async (req, res) => {
+  try {
+    const { device_id, plant_id } = req.body;
+    const plant = await Plant.findById(plant_id);
+    if (!plant) return res.status(404).json({ message: "Plant not found" });
+
+    const result = await Sensor.findOneAndUpdate(
+      { device_id },
+      { assignedPlant: plant },
+      { new: true, upsert: true }
+    );
+
+    res.json({ message: "Plant assigned", updated: result });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to assign plant" });
+  }
+});
+
+// TEMP: Delete device entries by device_id
+app.get("/api/delete-device/:id", async (req, res) => {
+  try {
+    const result = await Sensor.deleteMany({ device_id: req.params.id });
+    res.json({ message: `Deleted ${result.deletedCount} entries for ${req.params.id}` });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ error: "Failed to delete device data." });
   }
 });
 
