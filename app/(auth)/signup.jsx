@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, TextInput, StyleSheet, ActivityIndicator, Ale
 import { CustomButton } from "@/components";
 import { useRouter } from "expo-router";
 import { images } from "../../constants/index";
+import { signupStyle } from "../../components/styles";
 import { ImageBackground, ScrollView } from "react-native-web";
 
 const SignUp = () => {
@@ -38,17 +39,17 @@ const SignUp = () => {
   return (
     <ImageBackground
           source = {images.landingbackground}
-          style={[styles.background, { backgroundColor: '#000' }]}
+          style={[signupStyle.background, { backgroundColor: '#000' }]}
           resizeMode="cover"
           blurRadius={7}
     >
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Grow It!</Text>
+    <SafeAreaView style={signupStyle.safeArea}>
+      <ScrollView contentContainerStyle={signupStyle.scrollContainer}>
+        <View style={signupStyle.container}>
+          <Text style={signupStyle.title}>Grow It!</Text>
       
           <TextInput
-            style={styles.username_input}
+            style={signupStyle.username_input}
             placeholder="Username"
             value={username}
             onChangeText={setUsername}
@@ -56,7 +57,7 @@ const SignUp = () => {
           />
 
           <TextInput
-            style={styles.email_input}
+            style={signupStyle.email_input}
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
@@ -65,7 +66,7 @@ const SignUp = () => {
           />
       
           <TextInput
-            style={styles.password_input}
+            style={signupStyle.password_input}
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
@@ -75,10 +76,10 @@ const SignUp = () => {
           <CustomButton
             title={loading ? "Signing up..." : "Sign Up"}
             handlePress={handleSignUp}
-            containerStyles={styles.button}
+            containerStyles={signupStyle.button}
           />
       
-          <Text style={styles.linkText} onPress={() => router.push("/login")}>
+          <Text style={signupStyle.linkText} onPress={() => router.push("/login")}>
             Already have an account? Login
           </Text>
           {loading && <ActivityIndicator size="large" color="#000" />}
@@ -88,98 +89,5 @@ const SignUp = () => {
     </ImageBackground>
   );
 };
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  safeArea: {
-    flex: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingVertical: '2%',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  container: {
-    flex: 1,
-    width: '75%',
-    backgroundColor: 'rgba(254, 253, 252, 0.85)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-  },
-  title: {
-    marginTop: '1%',
-    fontFamily: "BungeeShade-Regular", 
-    fontSize: 140, 
-    fontWeight: 'bold', 
-    textAlign: 'center',
-    justifyContent: 'flex-start',
-    color: '#093001',
-  },
-  username_input: {
-    borderRadius: 20,
-    borderWidth: 2,
-    minHeight: 45,
-    marginTop: '4%',
-    paddingHorizontal: 20,
-    width: "45%",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    borderColor: "#093001",
-    backgroundColor: "#fff",   
-    fontFamily: 'Roboto-Regular',
-    color: '#072404',
-  },
-  email_input: {
-    borderRadius: 20,
-    borderWidth: 2,
-    minHeight: 45,
-    marginTop: '1%',
-    paddingHorizontal: 20,
-    width: "45%",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    borderColor: "#093001",
-    backgroundColor: "#fff",   
-    fontFamily: 'Roboto-Regular',
-    color: '#072404',
-  },
-  password_input: {
-    borderRadius: 20,
-    borderWidth: 2,
-    minHeight: 45,
-    marginTop: '1%',
-    paddingHorizontal: 20,
-    width: "45%",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-    borderColor: "#093001",
-    backgroundColor: "#fff",   
-    fontFamily: 'Roboto-Regular',
-    color: '#072404',
-  },
-  button: { 
-    marginVertical: 5, 
-    marginTop: '1%',
-    width: "45%", 
-    backgroundColor: "#1f1714"
-  },
-  linkText: {
-    marginTop: '2%',
-    marginBottom: '2%',
-    color: "#093001",
-    fontSize: 20,
-    fontFamily: 'Roboto-Italic',
-    textDecorationLine: "underline",
-  },
-})
 
 export default SignUp;
