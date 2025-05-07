@@ -49,7 +49,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signUp" options={{ headerShown: false }} />
+        <Stack.Screen name="signup" options={{ headerShown: false }} />
       </Stack>
     </GlobalProvider>
   );

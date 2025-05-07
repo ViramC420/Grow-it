@@ -10,11 +10,15 @@ import {
   StyleSheet,
   Image,
   Modal,
+  Dimensions
 } from "react-native";
+import { LineChart } from "react-native-chart-kit";
 import { FontAwesome } from "@expo/vector-icons";
+import { homeStyle, navBar } from "../../components/styles";
 import { images } from "../../constants";
 
 function App() {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const [sensorData, setSensorData] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -37,7 +41,7 @@ function App() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 30000);
+    const interval = setInterval(fetchData, 30 * 60 * 1800);
     return () => clearInterval(interval);
   }, []);
 
@@ -77,78 +81,108 @@ function App() {
   return (
     <ImageBackground
       source={images.home}
-      style={[styles.background, { backgroundColor: "#000" }]}
+      style={[homeStyle.background, { backgroundColor: "#000" }]}
       resizeMode="cover"
       blurRadius={7}
     >
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}> Grow It! - Dashboard</Text>
-          <Text style={styles.search} onPress={() => router.push("/search")}>
-            <FontAwesome name="search" size={35} color="#000" />
+      <SafeAreaView style={homeStyle.safeArea}>
+        <View style={navBar.header}>
+          <Text style={navBar.title}> Grow It! - Dashboard</Text>
+          <Text style={navBar.search} onPress={() => router.push("/search")}>
+            <FontAwesome name="search" size={45} color="#000" />
           </Text>
-          <Text style={styles.setup} onPress={() => router.push("/setup")}>
-            <FontAwesome name="plus" size={35} color="#000" />
+          <Text style={navBar.setup} onPress={() => router.push("/setup")}>
+            <FontAwesome name="plus" size={45} color="#000" />
           </Text>
-          <Text style={styles.settings} onPress={() => router.push("/settings")}>
-            <FontAwesome name="cog" size={35} color="#000" />
+          <Text style={navBar.settings} onPress={() => router.push("/settings")}>
+            <FontAwesome name="cog" size={45} color="#000" />
           </Text>
         </View>
-
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.container}>
+                    
+        <ScrollView contentContainerStyle={homeStyle.scrollContainer}>
+          <View style={homeStyle.container}>
             {sensorData.length === 0 ? (
               <Text>No sensor data available.</Text>
             ) : (
               sensorData.map((entry, i) => (
-                <View key={i} style={styles.sensorCard}>
-                  <View style={styles.deviceHeader}>
-                    <Text style={styles.deviceId}> Device ID: {entry.device_id}</Text>
-                    <View style={styles.divider} />
+                <View key={i} style={homeStyle.sensorCard}>
+                  <View style={homeStyle.deviceHeader}>
+                    <Text style={homeStyle.deviceId}> Device ID: {entry.device_id}</Text>
+                    <View style={homeStyle.divider} />
                   </View>
 
-                  <View style={styles.sensorData}>
-                    <View>
-                      <View style={styles.tempcontainer}>
-                        <Text style={styles.temp}>Temperature: {entry.temp_f}°F</Text>
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
+                    <View style = {homeStyle.tempandhum}>
+                      <View style={[homeStyle.tempcontainer, hoveredIndex === `temp-${i}` && homeStyle.temphoverContainer]}
+                        onMouseEnter={() => setHoveredIndex(`temp-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
+                        <FontAwesome name="thermometer-half" size={35} />
+                        <Text style={homeStyle.temp}>{entry.temp_f}°F</Text>
                       </View>
-                      <View style={styles.humiditycontainer}>
-                        <Text style={styles.humidity}>Humidity: {entry.humidity}%</Text>
+                        
+                      <View style={[homeStyle.humiditycontainer, hoveredIndex === `humidity-${i}` && homeStyle.humhoverContainer]} 
+                        onMouseEnter={() => setHoveredIndex(`humidity-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
+                        <FontAwesome name="cloud" size={35} color="#000" />
+                        <Text style={homeStyle.humidity}> {entry.humidity}%</Text>
                       </View>
-                    </View>
+                    </View>    
 
-                    <View style={styles.lightcontainer}>
-                      <Text style={styles.light}>{entry.light_condition}</Text>
-                    </View>
-
-                    <View style={styles.soilcontainer}>
-                      <Text style={styles.soil}>Soil: {entry.soil_condition}</Text>
-                    </View>
-
-                    <View style={styles.plantContainer}>
-                      {entry.assignedPlant?.image_url ? (
-                        <Image
-                          source={{ uri: entry.assignedPlant.image_url }}
-                          style={styles.plantImage}
-                        />
-                      ) : (
-                        <View style={styles.plantPlaceholder}>
-                          <Text style={styles.light}>No Image</Text>
+                    <View style={homeStyle.containrest}>
+                      <View style={homeStyle.lightcontainer}>
+                        <View style={homeStyle.lightHeader}>
+                          <FontAwesome 
+                            name={entry.light_condition === "Dark" ? "moon-o" : "sun-o"} 
+                            size={35} 
+                            color="#000" 
+                          />
+                          <Text style={homeStyle.light}> {entry.light_condition} </Text>
                         </View>
-                      )}
-                      <Text style={styles.plantName}>
-                        {entry.assignedPlant?.plantname || "No Plant Assigned"}
-                      </Text>
-                      <Text
-                        style={styles.editButton}
-                        onPress={() => openAssignModal(entry.device_id)}
-                      >
-                        ✏️ Edit
-                      </Text>
+                      </View>
+                  
+                      <View style={homeStyle.soilcontainer}>
+                        <View style={homeStyle.soilHeader}>
+                          <FontAwesome
+                            name={
+                              entry.soil_condition === "Only Water" ? "tint" :
+                              entry.soil_condition === "Wet Soil" ? "tint-slash" :
+                              entry.soil_condition === "Moist Soil" ? "cloud" : "leaf"
+                            }
+                            size={35}
+                            color="#000"
+                          />
+                          <Text style={homeStyle.soil}> {entry.soil_condition}</Text>
+                        </View> 
+                      </View>
+
+                      <View style={homeStyle.plantContainer}>
+                        {entry.assignedPlant?.image_url ? (
+                          <Image
+                            source={{ uri: entry.assignedPlant.image_url }}
+                            style={homeStyle.plantImage}
+                          />
+                        ) : (
+                          <View style={homeStyle.plantPlaceholder}>
+                            <Text style={homeStyle.light}>No Image</Text>
+                          </View>
+                        )}
+                    
+                        <Text style={homeStyle.plantName}>
+                          {entry.assignedPlant?.plantname || "No Plant Assigned"}
+                        </Text>
+                        <Text
+                          style={homeStyle.editButton}
+                          onPress={() => openAssignModal(entry.device_id)}
+                        >
+                          Edit
+                        </Text>
+                      </View>
                     </View>
                   </View>
 
-                  <Text style={styles.timestamp}> Last updated: {entry.timestamp}</Text>
+                  <View>
+                    <Text style={homeStyle.timestamp}>
+                      Last updated: {entry.timestamp}
+                    </Text>
+                  </View>
                 </View>
               ))
             )}
@@ -161,28 +195,25 @@ function App() {
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>Assign a Plant</Text>
+          <View style={homeStyle.modalOverlay}>
+            <View style={homeStyle.modalContainer}>
+              <Text style={homeStyle.modalTitle}>Assign a Plant</Text>
               <ScrollView style={{ maxHeight: 300 }}>
                 {plants.length > 0 ? (
                   plants.map((plant) => (
                     <Text
                       key={plant._id}
-                      style={styles.modalItem}
+                      style={homeStyle.modalItem}
                       onPress={() => assignPlantToDevice(plant._id)}
                     >
                       {plant.plantname}
                     </Text>
                   ))
                 ) : (
-                  <Text style={styles.modalItem}>No plants found</Text>
+                  <Text style={homeStyle.modalItem}>No plants found</Text>
                 )}
               </ScrollView>
-              <Text
-                style={styles.modalCancel}
-                onPress={() => setModalVisible(false)}
-              >
+              <Text style={homeStyle.modalCancel} onPress={() => setModalVisible(false)}>
                 Cancel
               </Text>
             </View>
@@ -192,226 +223,5 @@ function App() {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: "contain",
-    width: "100%",
-    height: "100%",
-  },
-  safeArea: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    marginTop: 10,
-  },
-  title: {
-    flex: 1,
-    fontSize: 45,
-    fontFamily: "BungeeShade-Regular",
-    fontWeight: "bold",
-    color: "#000",
-    paddingTop: "1%",
-    paddingHorizontal: "1%",
-  },
-  search: { paddingHorizontal: "1%" },
-  setup: { paddingHorizontal: "1%" },
-  settings: { paddingHorizontal: "1%" },
-  scrollContainer: {
-    flexGrow: 1,
-    paddingVertical: "1%",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-  container: { width: "95%" },
-  sensorCard: {
-    marginBottom: "5%",
-    width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.6)",
-    borderRadius: 12,
-    padding: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  deviceHeader: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    width: "100%",
-    alignSelf: "center",
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  deviceId: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
-    fontFamily: "Roboto-Regular",
-    textAlign: "center",
-  },
-  divider: {
-    marginTop: 8,
-    height: 1,
-    backgroundColor: "#ccc",
-    width: "100%",
-  },
-  sensorData: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: "%1",
-  },
-  tempcontainer: {
-    borderRadius: 20,
-    height: 100,
-    width: "125%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(254, 253, 252, 0.85)",
-  },
-  temp: {
-    fontSize: 20,
-    fontFamily: "Roboto-Regular",
-    color: "#000",
-    paddingHorizontal: "5%",
-  },
-  humiditycontainer: {
-    borderRadius: 20,
-    height: 100,
-    marginTop: "20%",
-    width: "125%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(254, 253, 252, 0.85)",
-  },
-  humidity: {
-    fontSize: 20,
-    fontFamily: "Roboto-Regular",
-    color: "#000",
-    paddingHorizontal: "5%",
-  },
-  lightcontainer: {
-    borderRadius: 20,
-    height: 230,
-    width: "20%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(254, 253, 252, 0.85)",
-  },
-  light: {
-    fontSize: 20,
-    fontFamily: "Roboto-Regular",
-    color: "#000",
-    paddingHorizontal: "5%",
-  },
-  soilcontainer: {
-    borderRadius: 20,
-    height: 230,
-    width: "20%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(254, 253, 252, 0.85)",
-  },
-  soil: {
-    fontSize: 20,
-    fontFamily: "Roboto-Regular",
-    color: "#000",
-    paddingHorizontal: "5%",
-  },
-  plantContainer: {
-    borderRadius: 20,
-    height: 230,
-    width: "20%",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(254, 253, 252, 0.85)",
-    padding: 10,
-  },
-  plantImage: {
-    width: "100%",
-    height: 140,
-    borderRadius: 12,
-    resizeMode: "cover",
-    marginBottom: 8,
-  },
-  plantName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    textAlign: "center",
-  },
-  editButton: {
-    marginTop: 8,
-    fontSize: 16,
-    color: "#007AFF",
-    textAlign: "center",
-    fontWeight: "600",
-  },
-  plantPlaceholder: {
-    width: "100%",
-    height: 140,
-    backgroundColor: "#ddd",
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-  timestamp: {
-    fontSize: 14,
-    fontStyle: "italic",
-    color: "#444",
-    marginTop: 10,
-    marginLeft: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 20,
-    width: "80%",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
-    textAlign: "center",
-  },
-  modalItem: {
-    fontSize: 18,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    textAlign: "center",
-  },
-  modalCancel: {
-    fontSize: 16,
-    marginTop: 15,
-    textAlign: "center",
-    color: "red",
-  },
-});
 
 export default App;
