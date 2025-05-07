@@ -41,7 +41,8 @@ function App() {
     };
 
     fetchData();
-    const interval = setInterval(fetchData, 30 * 60 * 1800);
+    //const interval = setInterval(fetchData, 30 * 60 * 1800); // this is 9 hours lol
+    const interval = setInterval(fetchData, 10000); //10,000 ms = 10 seconds
     return () => clearInterval(interval);
   }, []);
 

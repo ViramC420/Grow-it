@@ -171,6 +171,7 @@ app.put("/api/assign", async (req, res) => {
 });
 
 // TEMP: Delete device entries by device_id
+// paste into browser http://localhost:5001/api/delete-device/"picoName"
 app.get("/api/delete-device/:id", async (req, res) => {
   try {
     const result = await Sensor.deleteMany({ device_id: req.params.id });
