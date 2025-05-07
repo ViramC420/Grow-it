@@ -1,3 +1,4 @@
+//npx expo start
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { router } from "expo-router";
@@ -7,15 +8,26 @@ import {
   ScrollView,
   Text,
   View,
-  StyleSheet,
   Image,
   Modal,
-  Dimensions
 } from "react-native";
-import { LineChart } from "react-native-chart-kit";
 import { FontAwesome } from "@expo/vector-icons";
 import { homeStyle, navBar } from "../../components/styles";
 import { images } from "../../constants";
+
+function isOutOfRange(value, rangeArr) {
+  if (!Array.isArray(rangeArr) || rangeArr.length !== 2) return false;
+  const [min, max] = rangeArr;
+  return value < min || value > max;
+}
+
+function normalizeSoil(condition) {
+  const c = condition.toLowerCase();
+  if (c.includes("moist")) return "moist";
+  if (c.includes("dry")) return "dry";
+  if (c.includes("open")) return "open air";
+  return c;
+}
 
 function App() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -41,8 +53,7 @@ function App() {
     };
 
     fetchData();
-    //const interval = setInterval(fetchData, 30 * 60 * 1800); // this is 9 hours lol
-    const interval = setInterval(fetchData, 10000); //10,000 ms = 10 seconds
+    const interval = setInterval(fetchData, 10000);
     return () => clearInterval(interval);
   }, []);
 
@@ -105,87 +116,125 @@ function App() {
             {sensorData.length === 0 ? (
               <Text>No sensor data available.</Text>
             ) : (
-              sensorData.map((entry, i) => (
-                <View key={i} style={homeStyle.sensorCard}>
-                  <View style={homeStyle.deviceHeader}>
-                    <Text style={homeStyle.deviceId}> Device ID: {entry.device_id}</Text>
-                    <View style={homeStyle.divider} />
-                  </View>
+              sensorData.map((entry, i) => {
+                const warnings = [];
+                const plant = entry.assignedPlant;
 
-                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
-                    <View style = {homeStyle.tempandhum}>
-                      <View style={[homeStyle.tempcontainer, hoveredIndex === `temp-${i}` && homeStyle.temphoverContainer]}
-                        onMouseEnter={() => setHoveredIndex(`temp-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
-                        <FontAwesome name="thermometer-half" size={35} />
-                        <Text style={homeStyle.temp}>{entry.temp_f}°F</Text>
-                      </View>
-                        
-                      <View style={[homeStyle.humiditycontainer, hoveredIndex === `humidity-${i}` && homeStyle.humhoverContainer]} 
-                        onMouseEnter={() => setHoveredIndex(`humidity-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
-                        <FontAwesome name="cloud" size={35} color="#000" />
-                        <Text style={homeStyle.humidity}> {entry.humidity}%</Text>
-                      </View>
-                    </View>    
+                if (plant) {
+                  if (isOutOfRange(entry.temp_f, plant.temperaturerange)) {
+                    warnings.push(`⚠ Temperature out of range (expected: ${plant.temperaturerange[0]}–${plant.temperaturerange[1]}°F)`);
+                  }
+                  if (isOutOfRange(entry.humidity, plant.humidityrange)) {
+                    warnings.push(`⚠ Humidity out of range (expected: ${plant.humidityrange[0]}–${plant.humidityrange[1]}%)`);
+                  }
+                  if (
+                    plant.moisturerange &&
+                    normalizeSoil(plant.moisturerange) !== normalizeSoil(entry.soil_condition)
+                  ) {
+                    warnings.push(
+                      `⚠ Soil moisture mismatch (expected: ${plant.moisturerange}, got: ${entry.soil_condition})`
+                    );
+                  }
+                  if (entry.light_condition.toLowerCase() !== "light") {
+                    warnings.push(`⚠ Light condition too low (expected: Light)`);
+                  }
+                }
 
-                    <View style={homeStyle.containrest}>
-                      <View style={homeStyle.lightcontainer}>
-                        <View style={homeStyle.lightHeader}>
-                          <FontAwesome 
-                            name={entry.light_condition === "Dark" ? "moon-o" : "sun-o"} 
-                            size={35} 
-                            color="#000" 
-                          />
-                          <Text style={homeStyle.light}> {entry.light_condition} </Text>
+                return (
+                  <View key={i} style={homeStyle.sensorCard}>
+                    <View style={homeStyle.deviceHeader}>
+                      <Text style={homeStyle.deviceId}> Device ID: {entry.device_id}</Text>
+                      <View style={homeStyle.divider} />
+                    </View>
+
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
+                      <View style={homeStyle.tempandhum}>
+                        <View style={[homeStyle.tempcontainer, hoveredIndex === `temp-${i}` && homeStyle.temphoverContainer]}
+                          onMouseEnter={() => setHoveredIndex(`temp-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
+                          <FontAwesome name="thermometer-half" size={35} />
+                          <Text style={homeStyle.temp}>{entry.temp_f}°F</Text>
+                        </View>
+                          
+                        <View style={[homeStyle.humiditycontainer, hoveredIndex === `humidity-${i}` && homeStyle.humhoverContainer]} 
+                          onMouseEnter={() => setHoveredIndex(`humidity-${i}`)} onMouseLeave={() => setHoveredIndex(null)}>
+                          <FontAwesome name="cloud" size={35} color="#000" />
+                          <Text style={homeStyle.humidity}> {entry.humidity}%</Text>
+                        </View>
+                      </View>    
+
+                      <View style={homeStyle.containrest}>
+                        <View style={homeStyle.lightcontainer}>
+                          <View style={homeStyle.lightHeader}>
+                            <FontAwesome 
+                              name={entry.light_condition === "Dark" ? "moon-o" : "sun-o"} 
+                              size={35} 
+                              color="#000" 
+                            />
+                            <Text style={homeStyle.light}> {entry.light_condition} </Text>
+                          </View>
+                        </View>
+                    
+                        <View style={homeStyle.soilcontainer}>
+                          <View style={homeStyle.soilHeader}>
+                            <FontAwesome
+                              name={
+                                normalizeSoil(entry.soil_condition) === "dry" ? "tint" :
+                                normalizeSoil(entry.soil_condition) === "moist" ? "cloud" : "leaf"
+                              }
+                              size={35}
+                              color="#000"
+                            />
+                            <Text style={homeStyle.soil}> {entry.soil_condition}</Text>
+                          </View> 
+                        </View>
+
+                        <View style={homeStyle.plantContainer}>
+                          {entry.assignedPlant?.image_url ? (
+                            <Image
+                              source={{ uri: entry.assignedPlant.image_url }}
+                              style={homeStyle.plantImage}
+                            />
+                          ) : (
+                            <View style={homeStyle.plantPlaceholder}>
+                              <Text style={homeStyle.light}>No Image</Text>
+                            </View>
+                          )}
+                      
+                          <Text style={homeStyle.plantName}>
+                            {entry.assignedPlant?.plantname || "No Plant Assigned"}
+                          </Text>
+                          <Text
+                            style={homeStyle.editButton}
+                            onPress={() => openAssignModal(entry.device_id)}
+                          >
+                            Edit
+                          </Text>
                         </View>
                       </View>
-                  
-                      <View style={homeStyle.soilcontainer}>
-                        <View style={homeStyle.soilHeader}>
-                          <FontAwesome
-                            name={
-                              entry.soil_condition === "Only Water" ? "tint" :
-                              entry.soil_condition === "Wet Soil" ? "tint-slash" :
-                              entry.soil_condition === "Moist Soil" ? "cloud" : "leaf"
-                            }
-                            size={35}
-                            color="#000"
-                          />
-                          <Text style={homeStyle.soil}> {entry.soil_condition}</Text>
-                        </View> 
-                      </View>
+                    </View>
 
-                      <View style={homeStyle.plantContainer}>
-                        {entry.assignedPlant?.image_url ? (
-                          <Image
-                            source={{ uri: entry.assignedPlant.image_url }}
-                            style={homeStyle.plantImage}
-                          />
-                        ) : (
-                          <View style={homeStyle.plantPlaceholder}>
-                            <Text style={homeStyle.light}>No Image</Text>
-                          </View>
-                        )}
-                    
-                        <Text style={homeStyle.plantName}>
-                          {entry.assignedPlant?.plantname || "No Plant Assigned"}
-                        </Text>
-                        <Text
-                          style={homeStyle.editButton}
-                          onPress={() => openAssignModal(entry.device_id)}
-                        >
-                          Edit
-                        </Text>
+                    {warnings.length > 0 ? (
+                      <View style={{ marginTop: 10 }}>
+                        {warnings.map((w, idx) => (
+                          <Text key={idx} style={{ color: "red", fontWeight: "bold" }}>
+                            {w}
+                          </Text>
+                        ))}
                       </View>
+                    ) : (
+                      <Text style={{ color: "green", fontWeight: "bold", marginTop: 10 }}>
+                        ✅ All conditions within range
+                      </Text>
+                    )}
+
+                    <View>
+                      <Text style={homeStyle.timestamp}>
+                        Last updated: {entry.timestamp}
+                      </Text>
                     </View>
                   </View>
-
-                  <View>
-                    <Text style={homeStyle.timestamp}>
-                      Last updated: {entry.timestamp}
-                    </Text>
-                  </View>
-                </View>
-              ))
+                );
+              })
             )}
           </View>
         </ScrollView>
